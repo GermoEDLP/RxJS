@@ -1,10 +1,32 @@
 import { from, of } from "rxjs";
-import { distinctUntilKeyChanged, map } from "rxjs/operators";
+import { distinct, map } from "rxjs/operators";
+
+
+const numeros$ = of(1,1,1,2,2,3,3,4,5,5,6);
+
+/**
+ * Solo emitirá numeros que no haya emitido con anterioridad
+ */
+numeros$.pipe(
+    distinct()
+)
+.subscribe({
+    next: (val) => console.log("Next: ", val),
+    complete: () => console.log("Completado"),    
+})
+/**
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ Completado
+ */
 
  /**
-  * En el caso de trabajar con objetos,  es mas simple trabajar con 
-  * le debo decir al distinctUntilKeyChanged() ya que atiende directamete a las propiedades 
-  * de un objeto.
+  * En el caso de trabajar con objetos, le debo decir al distinct() 
+  * con que propiedad comparar.
   */
  interface Personaje{
    nombre: string,
@@ -31,17 +53,13 @@ import { distinctUntilKeyChanged, map } from "rxjs/operators";
   {
     nombre: 'Joker',
     marca: 'DC'
-  },
-  {
-    nombre: 'Spiderman',
-    marca: 'Marvel'
-  },
+  }
  ]
 
  const personajes$ = from(personajes);
 
  personajes$.pipe(
-   distinctUntilKeyChanged('nombre'),   // Le digo que compare con el nombre.
+   distinct(p => p.nombre),   // Le digo que compare con el nombre.
    map(p => p.nombre)         // Despues lo transformo por mero placer
  )
  .subscribe({
@@ -52,6 +70,5 @@ import { distinctUntilKeyChanged, map } from "rxjs/operators";
  Next: Batman
  Next: Spiderman
  Next: Joker
- Next: Spiderman
  Completado
  */
