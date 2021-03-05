@@ -24,6 +24,6 @@ Ambos emiten obserbables asincronos
 
 5. Indice `range()`
 
-    Genera un observable que emite numeros (<_number_>) que van desde el primer parametro y una cantidad de veces igual al segundo parametro
+    Genera un observable que emite numeros (<_number_>) que van desde el primer parametro y una cantidad de veces igual al segundo parametro. Es, por default, sincronico, pero puede ser asincronico si colocamos como tercer parametro la llamada al indice `asyncSchedule`.
 
 
