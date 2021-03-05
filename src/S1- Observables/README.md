@@ -1,7 +1,7 @@
 # Obserbables
 
 1. Definición
-    ![Imagen descriptiva](../Imagenes/01.png)
+    ![Imagen descriptiva](src/imagenes/01.png)
 
 2. Tipos de subscripción
 
