@@ -1,31 +1,25 @@
-import { of } from "rxjs";
-import { ajax, AjaxError } from "rxjs/ajax";
-import { catchError, map, pluck } from "rxjs/operators";
+import { fromEvent } from "rxjs";
+import { ajax } from "rxjs/ajax";
+import { debounceTime, map, mergeAll, pluck } from "rxjs/operators";
 
-const url = 'https://httpbin.org/delay/1';
+const body = document.querySelector("body");
+const input = document.createElement("input");
+body.append(input);
 
-/**
- * Realizo una peticion a la url por medio de la funcion getJSON()
- * Esto nos permite enviar headers como segundo argumento
- */
-
- const manejaError = (err: AjaxError) => {
-    console.warn('Error: ', err.message);
-    return of({
-        usuarios: [],
-        ok: false
-    })
- }
-
-const obs$ = ajax.getJSON(url, {
-    'Content-type': 'application/json',
-    'mi-token': 'ABC123'
-});
-
-obs$.pipe(
-    catchError(manejaError)
-).subscribe(console.log)
+const input$ = fromEvent<KeyboardEvent>(input, "keyup");
 
 /**
- * El catchError debe retornar siempre algo.
+ * El MergeAll() nos permite trabajar con emisiones de observables 
+ * internos, y podemos trabajarlos antes de emitirlos en nuestro codigo.
+ * En este caso, solo vamos a emitir los items que devuelve la peticion 
+ * al url.
  */
+input$
+  .pipe(
+    debounceTime(500),
+    pluck('target', 'value'),
+    map((text) => ajax.getJSON(`http://api.github.com/search/users?q=${text}`)),
+    mergeAll(),
+    pluck('items')
+  )
+  .subscribe(console.log);
